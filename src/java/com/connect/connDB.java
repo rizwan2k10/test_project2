@@ -299,15 +299,4 @@ public class connDB {
         return false;
     }
     
-    public static void main(String args[]){
-        connDB d = new connDB("localhost", 3306,
-        "dell_agents?zeroDateTimeBehavior=convertToNull", "root", "MTIhUEBzczM0NQ==");
-//        d.insertDB("agents", "error", "Hello", "Ara", "Next");
-//        System.out.println(d.getmanagers("Rizzzo").toString());
-//        d.agentData("haula", "Rizw");
-        boolean status = d.insertAreaManager("haula8");
-        System.out.println(status);
-        d.printdata(d.getareamanagers());
-        d.disconnDB();
-    }
 }

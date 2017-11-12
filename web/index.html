@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="jquery-3.2.1.min.js"></script>
+        <script>
+
+        $(document).ready(function () {
+           $.ajax({
+                url: "rest/areamanager",
+                datatype: "JSON",
+                type: "Get",
+                success: function (data) {
+                    for(var i=0;i<data.length;i++)
+                    {
+                        console.log(data[i]);
+                        var opt = new Option(data[i]);
+                        $("#area-managers").append(opt);
+                    }
+                },
+                error: function (e) {
+                      $("#area-managers").empty();
+                      $("#area-managers").append("Area Managers");
+                      alert("Error: " + e.text);
+                      
+//                    showResultFailed(jqXHR.responseText);
+//                    hideWaitingFail();
+                }
+            });
+           $("#area-managers").change(function () {
+               $.ajax({
+                url: "rest/manager",
+                data: "name=" + $("#area-managers").find(":selected").text(),
+                datatype: "JSON",
+                type: "Get",
+                success: function (data) {
+                    $("#managers").empty();
+                    var default_value = new Option("Manager");
+                    $("#managers").append(default_value);
+                    
+                    // Setting Agents dropdown empty
+                    $("#agents").empty();
+                    var default_value = new Option("Agent");
+                    $("#agents").append(default_value);
+                    
+                    for(var i=0;i<data.length;i++)
+                    {
+                        var opt = new Option(data[i]);
+                        $("#managers").append(opt);
+                    }
+                },
+                error: function (e) {
+                        $("#managers").empty();
+                        var default_value = new Option("Manager");
+                        $("#managers").append(default_value);
+                        alert("Error: " + e.text);
+                }
+            });
+           });
+           $("#managers").change(function () {
+               $.ajax({
+                url: "rest/agents",
+                data: "name=" + $("#managers").find(":selected").text(),
+                datatype: "JSON",
+                type: "Get",
+                success: function (data) {
+                    $("#agents").empty();
+                    var default_value = new Option("Agent");
+                    $("#agents").append(default_value);
+                    for(var i=0;i<data.length;i++)
+                    {
+                        var opt = new Option(data[i]);
+                        $("#agents").append(opt);
+                    }
+                },
+                error: function (e) {
+                    $("#agents").empty();
+                    var default_value = new Option("Agent");
+                    $("#agents").append(default_value);
+                    alert("Error: " + e.text);
+                }
+            });
+           });
+           
+           $("#agents").change(function () {
+               $.ajax({
+                url: "rest/agentInfo",
+                data: "manager="+ $("#managers").find(":selected").text() +"&name=" + $("#agents").find(":selected").text(),
+                datatype: "JSON",
+                type: "Get",
+                success: function (data) {
+                    console.log(data);
+                    $("#t01").find("tr:gt(0)").remove();
+                    console.log("Agent_name: " + data.name);
+                    $('<tr>').
+                    append($('<td>').text(data.name)).
+                    append($('<td>').text(data.cx)).
+                    append($('<td>').text(data.rar_1d)).
+                    append($('<td>').text(data.rar_7d)).
+                    append($('<td>').text(data.rar_28d)).
+                    append($('<td>').text(data.rdr_7d)).
+                    append($('<td>').text(data.obsr)).
+                    append($('<td>').text(data.c2f)).
+                    append($('<td>').text(data.c2f_rc)).
+                    append($('<td>').text(data.iblr)).
+                    append($('<td>').text(data.qcr)).
+                    append($('<td>').text(data.oblr)).
+                    append($('<td>').text(data.dps)).
+                    append($('<td>').text(data.AF)).
+                    append($('<td>').text(data.aht)).
+                    append($('<td>').text(data.ob)).
+                    append($('<td>').text(data.utiliz)).
+                    append($('<td>').text(data.dps_adpt)).appendTo("#t01");
+                },
+                error: function (e) {
+                    alert("Error: " + e.text);
+                }
+            });
+           }); 
+        });
+
+</script>
+    </head>
+    <body>
+        <div>TODO write content</div>
+<!--        <form action="/dell/rest/update" method="post">
+        <p>
+            Name : <input type="text" name="name" />
+        </p>
+        <p>
+            User : <input type="text" name="userType" />
+        </p>
+        <input type="submit" value="Add User" />
+    </form>-->
+    <div class="dropdown">
+    <div style="float:left;width:20%" id="area-manager-container">
+        <select id="area-managers">
+            <option>Area Manager</option>
+        </select>
+    </div>
+    </div>
+    <div class="dropdown">
+    <div style="float:left;width:20%" id="manager-container">
+        <select id="managers">
+            <option>Manager</option>
+        </select>
+    </div>
+    </div>
+    <div class="dropdown">
+    <div style="float:left;width:20%" id="area-container">
+        <select id="agents">
+            <option>Agent</option>
+        </select>
+    </div>
+    </div>
+<div id="table_div" class="centered">
+    <table id="t01" style="width:50%;margin:auto;">
+<tr>
+    <th>Agent name</th>
+    <th>CX</th>
+    <th>1D-RAR</th>
+    <th>7D-RAR</th>
+    <th>28D-RAR</th>
+    <th>7D-RDR</th>
+    <th>OBSR</th>
+    <th>C2F+</th>
+    <th>C2F_RC</th>
+    <th>IBLR</th>
+    <th>QCR</th>
+    <th>OBLR</th>
+    <th>DPS%</th>
+    <th>AF%</th>
+    <th>CRW</th>
+    <th>AHT</th>
+    <th>OB%</th>
+    <th>Utiliz</th>
+    <th>DPS_Adpt</th>
+  </tr>
+  <tr>
+    <td>Ex</td>
+    <td>Ex</td>
+    <td>Ex</td>
+  </tr>
+</table>
+</div>
+    </body>
+</html>
